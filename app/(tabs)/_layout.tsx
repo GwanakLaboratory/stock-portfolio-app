@@ -51,11 +51,7 @@ export default function TabLayout() {
           options={{
             title: '홈',
             tabBarIcon: ({ color, focused }) => (
-              <AnimatedTabBarIcon
-                name={'house.fill'}
-                color={color}
-                focused={focused}
-              />
+              <AnimatedTabBarIcon name="home" color={color} focused={focused} />
             ),
           }}
         />
@@ -65,7 +61,7 @@ export default function TabLayout() {
             title: '채팅',
             tabBarIcon: ({ color, focused }) => (
               <AnimatedTabBarIcon
-                name="list.bullet.rectangle.fill"
+                name="chatbubble-ellipses-outline"
                 color={color}
                 focused={focused}
               />
@@ -78,7 +74,7 @@ export default function TabLayout() {
             title: '네이버',
             tabBarIcon: ({ color, focused }) => (
               <AnimatedTabBarIcon
-                name="n.square.fill"
+                name="logo-web-component"
                 color={color}
                 focused={focused}
               />
@@ -91,9 +87,9 @@ export default function TabLayout() {
             title: '구글',
             tabBarIcon: ({ color, focused }) => (
               <AnimatedTabBarIcon
+                name="logo-google"
                 color={color}
                 focused={focused}
-                name="g.square.fill"
               />
             ),
           }}
@@ -104,9 +100,9 @@ export default function TabLayout() {
             title: '유튜브',
             tabBarIcon: ({ color, focused }) => (
               <AnimatedTabBarIcon
+                name="logo-youtube"
                 color={color}
                 focused={focused}
-                name="play.rectangle.fill"
               />
             ),
           }}

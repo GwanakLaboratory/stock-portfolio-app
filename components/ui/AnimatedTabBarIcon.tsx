@@ -1,13 +1,13 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useEffect } from 'react';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { IconSymbol, IconSymbolName } from './icon-symbol';
 
 type AnimatedTabBarIconProps = {
-  name: IconSymbolName;
+  name: any;
   color: string;
   focused: boolean;
 };
@@ -33,7 +33,7 @@ export function AnimatedTabBarIcon({
 
   return (
     <Animated.View style={animatedStyle}>
-      <IconSymbol name={name} size={28} color={color} />
+      <Ionicons name={name} size={20} color={color} />
     </Animated.View>
   );
 }

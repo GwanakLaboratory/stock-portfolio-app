@@ -1,0 +1,11 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+
+deviceManager.xml
+misc.xml
+modules.xml
+NOK.iml
+vcs.xml
+markdown.xml
+deviceStreaming.xml

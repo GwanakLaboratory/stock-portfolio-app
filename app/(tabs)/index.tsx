@@ -1,3 +1,4 @@
+import { Header } from '@/components/ui/Header';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
@@ -159,9 +160,86 @@ export default function HomeScreen() {
     }
   };
 
-  const pickImageAsync = async () => {
+  // 이미지 선택 옵션 표시
+  const showImagePickerOptions = () => {
+    Alert.alert('이미지 선택', '이미지를 가져올 방법을 선택하세요.', [
+      {
+        text: '취소',
+        style: 'cancel',
+      },
+      {
+        text: '카메라 촬영',
+        onPress: launchCamera,
+      },
+      {
+        text: '앨범 접근하기',
+        onPress: launchImageLibrary,
+      },
+    ]);
+  };
+
+  // 카메라로 사진 촬영
+  const launchCamera = async () => {
     try {
-      // 현재 권한 상태 확인
+      // 카메라 권한 확인
+      const { status: currentStatus } =
+        await ImagePicker.getCameraPermissionsAsync();
+
+      let finalStatus = currentStatus;
+
+      // 권한이 없으면 요청
+      if (currentStatus !== 'granted') {
+        const { status: requestStatus } =
+          await ImagePicker.requestCameraPermissionsAsync();
+        finalStatus = requestStatus;
+      }
+
+      // 권한이 거부되었을 때
+      if (finalStatus !== 'granted') {
+        Alert.alert(
+          '카메라 접근 권한 필요',
+          '카메라를 사용하려면 카메라 접근 권한이 필요합니다.',
+          [
+            {
+              text: '취소',
+              style: 'cancel',
+            },
+            {
+              text: '설정으로 이동',
+              onPress: () => {
+                if (Platform.OS === 'ios') {
+                  Linking.openURL('app-settings:');
+                } else {
+                  Linking.openSettings();
+                }
+              },
+            },
+          ]
+        );
+        return;
+      }
+
+      // 카메라 실행
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ['images'],
+        allowsEditing: true,
+        quality: 0.8,
+        base64: false,
+      });
+
+      if (!result.canceled && result.assets[0]) {
+        setSelectedImage(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.error('카메라 실행 중 오류:', error);
+      Alert.alert('오류', '카메라를 실행하는 중 오류가 발생했습니다.');
+    }
+  };
+
+  // 앨범에서 이미지 선택
+  const launchImageLibrary = async () => {
+    try {
+      // 앨범 권한 확인
       const { status: currentStatus } =
         await ImagePicker.getMediaLibraryPermissionsAsync();
 
@@ -187,7 +265,6 @@ export default function HomeScreen() {
             {
               text: '설정으로 이동',
               onPress: () => {
-                // iOS와 Android 모두 앱 설정으로 이동
                 if (Platform.OS === 'ios') {
                   Linking.openURL('app-settings:');
                 } else {
@@ -200,12 +277,12 @@ export default function HomeScreen() {
         return;
       }
 
-      // 권한이 있으면 이미지 선택
+      // 앨범에서 이미지 선택
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ['images'],
         allowsEditing: true,
-        quality: 0.8, // 성능을 위해 약간 압축
-        base64: false, // base64는 나중에 변환
+        quality: 0.8,
+        base64: false,
       });
 
       if (!result.canceled && result.assets[0]) {
@@ -220,18 +297,16 @@ export default function HomeScreen() {
   return (
     <SafeAreaView className="flex-1 bg-white" edges={['top']}>
       {/* 헤더 */}
-      <View className="flex-row justify-between items-center px-5 py-2.5 border-b border-gray-200">
-        <View className="flex-row items-center gap-3">
-          <TouchableOpacity className="p-1">
+
+      <Header
+        leftIcon={
+          <TouchableOpacity>
             <Ionicons name="menu-outline" size={24} color="gray" />
           </TouchableOpacity>
-
-          <Text className="text-base font-medium">ChatGPT 5.1</Text>
-        </View>
-
-        <View className="flex-row gap-3">
+        }
+        title="ChatGPT 5.1"
+        rightIcon={
           <TouchableOpacity
-            className="p-1"
             onPress={() => {
               // 채팅 초기화 확인 팝업
               Alert.alert(
@@ -268,13 +343,13 @@ export default function HomeScreen() {
           >
             <Ionicons name="trash-outline" size={20} color="gray" />
           </TouchableOpacity>
-        </View>
-      </View>
+        }
+      />
 
       {/* 키보드에 반응하는 컨테이너 */}
       <KeyboardAvoidingView
         className="flex-1"
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={'padding'}
         keyboardVerticalOffset={0}
       >
         {/* 메시지 리스트 */}
@@ -339,7 +414,7 @@ export default function HomeScreen() {
         <View className="flex-row items-center px-4 py-3 bg-white">
           <TouchableOpacity
             className="bg-gray-100 rounded-full p-2"
-            onPress={pickImageAsync}
+            onPress={showImagePickerOptions}
           >
             <Ionicons name="add-outline" size={24} color="gray" />
           </TouchableOpacity>

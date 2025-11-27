@@ -1,50 +1,258 @@
-# Welcome to your Expo app 👋
+# NOK - AI 채팅 & 주식 분석 앱
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+React Native + Expo + OpenAI GPT-4o를 활용한 통합 AI 앱
 
-## Get started
+## 📋 주요 기능
 
-1. Install dependencies
+### 💬 ChatGPT 기능 (Home 탭)
 
-   ```bash
-   npm install
-   ```
+- ✅ 실시간 AI 채팅
+- ✅ 이미지 분석 (GPT-4o Vision)
+- ✅ 카메라 촬영 / 앨범 접근
+- ✅ 대화 히스토리 자동 저장
+- ✅ 깔끔한 UI/UX
 
-2. Start the app
+### 📊 주식 분석 기능 (Chat 탭)
 
-   ```bash
-   npx expo start
-   ```
+- ✅ 개별 주식 AI 분석
+- ✅ AI 포트폴리오 생성 (위험도별)
+- ✅ 종목 검색
+- ✅ GPT 기반 투자 리포트
 
-In the output, you'll find options to open the app in a
+---
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## 🚀 빠른 시작
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+### 1️⃣ 환경 변수 설정
 
-## Get a fresh project
+프로젝트 루트에 `.env` 파일 생성:
 
-When you're ready, run:
-
-```bash
-npm run reset-project
+```env
+OPENAI_API_KEY=your_openai_api_key_here
+PORT=8000
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### 2️⃣ 의존성 설치
 
-## Learn more
+```bash
+yarn install
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+### 3️⃣ 서버 실행
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+yarn server
+```
 
-## Join the community
+서버가 실행되면 다음과 같이 표시됩니다:
 
-Join our community of developers creating universal apps.
+```
+============================================================
+🚀 통합 API 서버가 http://localhost:8000 에서 실행 중입니다.
+============================================================
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+📱 ChatGPT API:
+   💬 Chat: http://localhost:8000/api/chat
+
+📊 주식 분석 API:
+   📈 주식 분석: http://localhost:8000/api/stock/analyze
+   📊 포트폴리오: http://localhost:8000/api/stock/portfolio
+   🔍 종목 검색: http://localhost:8000/api/stock/search
+
+🔧 기타:
+   ❤️  Health check: http://localhost:8000/api/health
+============================================================
+```
+
+### 4️⃣ 앱 실행
+
+새 터미널에서:
+
+```bash
+yarn start
+```
+
+- iOS 시뮬레이터: `i` 키
+- Android 에뮬레이터: `a` 키
+- 실제 기기: QR 코드 스캔
+
+---
+
+## 📱 앱 사용 방법
+
+### Home 탭 - ChatGPT
+
+1. **텍스트 채팅**
+
+   - 메시지 입력창에 텍스트 입력
+   - 전송 버튼(↑) 클릭
+
+2. **이미지 분석**
+
+   - `+` 버튼 클릭
+   - "카메라 촬영" 또는 "앨범 접근하기" 선택
+   - 이미지와 함께 질문 입력
+
+3. **대화 관리**
+   - 채팅 내역 자동 저장
+   - 휴지통 아이콘으로 대화 초기화
+
+### Chat 탭 - 주식 분석
+
+#### 📊 주식 분석
+
+1. 상단 토글에서 "📊 주식 분석" 선택
+2. 검색창에 종목명 입력 (예: "삼성전자", "NAVER")
+3. 검색 결과에서 종목 선택
+4. AI 분석 결과 확인 (약 30초~1분 소요)
+
+#### 📈 AI 포트폴리오 생성
+
+1. 상단 토글에서 "📈 포트폴리오" 선택
+2. **포트폴리오 모델 선택**:
+   - 국내상장 (주식+ETF): 개별 주식과 ETF 혼합
+   - ETF 전용: 안정적인 ETF 포트폴리오
+   - ETF+TQ: ETF와 투자등급 고려
+3. **위험도 레벨 선택** (1~10):
+   - 1~3: 안정형 💼
+   - 4~6: 중립형 ⚖️
+   - 7~10: 공격형 🚀
+4. "📈 포트폴리오 생성" 버튼 클릭
+5. AI 분석 및 종목 구성 확인 (약 30초~1분 소요)
+
+---
+
+## 🔧 API 클라이언트 설정
+
+### 실제 기기에서 테스트하기
+
+앱을 실제 기기에서 테스트하려면 API 서버 주소를 변경해야 합니다.
+
+#### 1. 컴퓨터 IP 주소 확인
+
+**Windows:**
+
+```bash
+ipconfig
+# "IPv4 주소" 항목 확인 (예: 192.168.0.10)
+```
+
+**Mac/Linux:**
+
+```bash
+ifconfig | grep "inet "
+# 또는
+ip addr show
+```
+
+#### 2. API 주소 변경
+
+**`services/chatApi.ts`** 파일 수정:
+
+```typescript
+const API_BASE_URL = 'http://192.168.0.10:8000'; // 컴퓨터 IP로 변경
+```
+
+**`services/stockApi.ts`** 파일 수정:
+
+```typescript
+const STOCK_API_BASE_URL = 'http://192.168.0.10:8000'; // 컴퓨터 IP로 변경
+```
+
+#### 플랫폼별 설정
+
+| 플랫폼             | API 주소                       |
+| ------------------ | ------------------------------ |
+| iOS 시뮬레이터     | `http://localhost:8000`        |
+| Android 에뮬레이터 | `http://10.0.2.2:8000`         |
+| 실제 기기          | `http://YOUR_COMPUTER_IP:8000` |
+
+**중요**: 컴퓨터와 모바일 기기가 같은 Wi-Fi에 연결되어 있어야 합니다!
+
+---
+
+## 📂 프로젝트 구조
+
+```
+NOK/
+├── app/(tabs)/
+│   ├── index.tsx              # ChatGPT 채팅 화면
+│   ├── chat.tsx               # 주식 분석 화면
+│   └── _layout.tsx            # 탭 네비게이션
+├── components/
+│   └── ui/
+│       ├── Header.tsx         # 공통 헤더 컴포넌트
+│       └── AnimatedTabBarIcon.tsx
+├── services/
+│   ├── stock_server.js        # 통합 API 서버 ⭐
+│   ├── chatApi.ts             # ChatGPT API 클라이언트
+│   └── stockApi.ts            # 주식 분석 API 클라이언트
+├── server/
+│   ├── gpt.py                 # (선택) Python 주식 분석
+│   └── stock_api.py           # (선택) Flask 서버
+├── .env                       # 환경 변수
+├── package.json
+└── README.md
+```
+
+## 🎨 기술 스택
+
+### Frontend
+
+- **React Native** - 크로스 플랫폼 모바일 앱
+- **Expo** - 개발 및 빌드 도구
+- **NativeWind** - Tailwind CSS for React Native
+- **TypeScript** - 타입 안정성
+
+### Backend
+
+- **Node.js** - 서버 런타임
+- **Express** - 웹 프레임워크
+- **OpenAI GPT-4o** - AI 모델 (Chat + Vision)
+
+### 추가 도구
+
+- **AsyncStorage** - 로컬 데이터 저장
+- **expo-image-picker** - 이미지 선택/촬영
+- **React Navigation** - 탭 네비게이션
+
+---
+
+## 📝 추가 정보
+
+### 포트폴리오 모델 종류
+
+| 모델      | 설명                      |
+| --------- | ------------------------- |
+| STOCK_ETF | 국내 상장 주식과 ETF 혼합 |
+| ETF       | ETF만으로 구성 (안정적)   |
+| ETF_TQ    | ETF + 투자등급 고려       |
+
+### API 비용
+
+GPT-4o 모델 사용으로 OpenAI API 비용 발생:
+
+- 일반 채팅: 약 $0.001 ~ $0.01 / 메시지
+- 이미지 분석: 약 $0.01 ~ $0.05 / 이미지
+- 주식 분석: 약 $0.05 ~ $0.10 / 종목
+- 포트폴리오 생성: 약 $0.10 ~ $0.30 / 포트폴리오
+
+### 샘플 주식 데이터
+
+현재 검색 가능한 샘플 종목:
+
+- 삼성전자 (005930)
+- SK하이닉스 (000660)
+- LG전자 (066570)
+- 현대차 (005380)
+- NAVER (035420)
+- 카카오 (035720)
+- LG에너지솔루션 (373220)
+- 삼성바이오로직스 (207940)
+- KODEX 200 (069500)
+- KB금융 (105560)
+- 신한지주 (055550)
+- POSCO홀딩스 (005490)
+- 기아 (000270)
+- HD현대일렉트릭 (267260)
+- HMM (011200)
