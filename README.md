@@ -76,6 +76,17 @@ yarn start
 - Android 에뮬레이터: `a` 키
 - 실제 기기: QR 코드 스캔
 
+### 5️⃣ 터널링 모드 실행
+
+새 터미널에서
+
+```bash
+npx expo start --tunnel
+```
+
+- EXPO GO 앱으로 어디서든 QR 코드를 스캔해서 접속 가능
+- 단점: 좀 느릴 수 있음
+
 ---
 
 ## 📱 앱 사용 방법
