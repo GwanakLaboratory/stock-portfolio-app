@@ -1,11 +1,11 @@
 import { Header } from '@/components/ui/Header';
 import { Ionicons } from '@expo/vector-icons';
-import React, { useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
   KeyboardAvoidingView,
-  Platform,
   ScrollView,
   Text,
   TextInput,
@@ -41,6 +41,15 @@ export default function ChatScreen() {
   const [riskLevel, setRiskLevel] = useState<number>(6);
   const [portfolioData, setPortfolioData] = useState<any>(null);
 
+  useEffect(() => {
+    const loadUser = async () => {
+      const userId = await AsyncStorage.getItem('user_id');
+      console.log(userId);
+    };
+
+    loadUser();
+  }, []);
+
   // 종목 검색
   const handleSearchStock = async () => {
     if (!stockQuery.trim()) return;
@@ -72,7 +81,7 @@ export default function ChatScreen() {
       const result = await analyzeStock(stock.name, stock.ticker);
 
       if (result.success && result.report) {
-        setAnalysisResult(result.report);
+        // success
       } else {
         throw new Error('분석 결과를 가져올 수 없습니다.');
       }
@@ -113,10 +122,7 @@ export default function ChatScreen() {
 
   // 주식 분석 화면
   const renderAnalyze = () => (
-    <KeyboardAvoidingView
-      className="flex-1"
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
+    <KeyboardAvoidingView className="flex-1" behavior="padding">
       <ScrollView className="flex-1 px-4 py-4">
         {/* 검색 입력 */}
         <View className="mb-4">
