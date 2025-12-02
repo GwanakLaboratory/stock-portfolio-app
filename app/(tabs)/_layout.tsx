@@ -27,7 +27,18 @@ export default function TabLayout() {
       }
 
       const data = await validateUser(userId);
+      console.log(data);
       if (data.success) {
+        
+      await AsyncStorage.setItem('user_id', data.userId);
+      
+      // userData도 함께 저장
+      const userData = {
+        phoneNumber: data.phone,
+        email: data.email,
+        isLoggedIn: true,
+      };
+      await AsyncStorage.setItem('userData', JSON.stringify(userData));
         setIsLoggedIn(true);
       } else {
         setIsLoggedIn(false);

@@ -24,6 +24,13 @@ export default function Index() {
       console.log(data);
       if (data.success) {
         setIsLoggedIn(true);
+        await AsyncStorage.setItem('user_id', data.userId); 
+        const userData = {
+          phoneNumber: data.phone,
+          email: data.email,
+          isLoggedIn: true,
+        };
+        await AsyncStorage.setItem('userData', JSON.stringify(userData));
       } else {
         setIsLoggedIn(false);
       }
