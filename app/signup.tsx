@@ -18,6 +18,7 @@ export default function SignupScreen() {
   const phoneNumber = params.phoneNumber as string;
 
   const [email, setEmail] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleConfirm = async () => {
     if (!email.trim()) {
@@ -32,16 +33,32 @@ export default function SignupScreen() {
       return;
     }
 
+    // 중복 요청 방지
+    if (isLoading) {
+      return;
+    }
+
+    setIsLoading(true);
     try {
       const data = await getUser(email, phoneNumber);
       console.log(data, typeof data, data.user_id);
       await AsyncStorage.setItem('user_id', data.user_id);
+      
+      // userData도 함께 저장
+      const userData = {
+        phoneNumber,
+        email,
+        isLoggedIn: true,
+      };
+      await AsyncStorage.setItem('userData', JSON.stringify(userData));
 
       // // 메인 화면으로 이동
       router.replace('/(tabs)');
     } catch (error) {
       console.error('Failed to save user data:', error);
       Alert.alert('오류', '정보 저장에 실패했습니다.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -90,12 +107,14 @@ export default function SignupScreen() {
 
           <TouchableOpacity
             className={`h-14 bg-blue-500 rounded-xl flex justify-center items-center shadow-lg px-4 py-3 text-base text-white ${
-              !email.trim() ? 'opacity-50 bg-gray-300 shadow-none' : ''
+              !email.trim() || isLoading ? 'opacity-50 bg-gray-300 shadow-none' : ''
             }`}
             onPress={handleConfirm}
-            disabled={!email.trim()}
+            disabled={!email.trim() || isLoading}
           >
-            <Text className="text-base font-semibold text-white">확인</Text>
+            <Text className="text-base font-semibold text-white">
+              {isLoading ? '처리 중...' : '확인'}
+            </Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>

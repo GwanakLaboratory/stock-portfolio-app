@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
   Alert,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -40,26 +41,48 @@ export default function MyPage() {
     }
   };
 
-  const handleLogout = () => {
-    Alert.alert('로그아웃', '정말 로그아웃 하시겠어요?', [
-      {
-        text: '취소',
-        style: 'cancel',
-      },
-      {
-        text: '로그아웃',
-        style: 'destructive',
-        onPress: async () => {
-          try {
-            await AsyncStorage.removeItem('userData');
-            router.replace('/login');
-          } catch (error) {
-            console.error('Failed to logout:', error);
-            Alert.alert('오류', '로그아웃에 실패했습니다.');
-          }
+  const handleLogout = async () => {
+    console.log('로그아웃 버튼 클릭됨');
+    
+    const performLogout = async () => {
+      console.log('로그아웃 확인됨, 데이터 삭제 시작');
+      try {
+        // 모든 사용자 데이터 삭제
+        await AsyncStorage.removeItem('userData');
+        await AsyncStorage.removeItem('user_id');
+        console.log('데이터 삭제 완료, 로그인 화면으로 이동');
+        
+        // 로그인 페이지로 직접 이동
+        router.replace('/login');
+      } catch (error) {
+        console.error('Failed to logout:', error);
+        Alert.alert('오류', '로그아웃에 실패했습니다.');
+      }
+    };
+
+    // 웹에서는 window.confirm 사용, 모바일에서는 Alert 사용
+    if (Platform.OS === 'web') {
+      if (typeof window !== 'undefined' && window.confirm('정말 로그아웃 하시겠어요?')) {
+        await performLogout();
+      } else {
+        console.log('로그아웃 취소');
+      }
+    } else {
+      Alert.alert('로그아웃', '정말 로그아웃 하시겠어요?', [
+        {
+          text: '취소',
+          style: 'cancel',
+          onPress: () => {
+            console.log('로그아웃 취소');
+          },
         },
-      },
-    ]);
+        {
+          text: '로그아웃',
+          style: 'destructive',
+          onPress: performLogout,
+        },
+      ]);
+    }
   };
 
   if (isLoading) {
@@ -95,6 +118,7 @@ export default function MyPage() {
             <TouchableOpacity
               style={styles.logoutButton}
               onPress={handleLogout}
+              activeOpacity={0.7}
             >
               <Text style={styles.logoutButtonText}>로그아웃</Text>
             </TouchableOpacity>

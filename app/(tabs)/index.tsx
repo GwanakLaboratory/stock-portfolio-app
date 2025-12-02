@@ -1,20 +1,16 @@
 import { Header } from '@/components/ui/Header';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as ImagePicker from 'expo-image-picker';
 import { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
-  Image,
   KeyboardAvoidingView,
-  Linking,
-  Platform,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { sendMessageToOpenAI } from '../../services/chatApi';
@@ -23,13 +19,12 @@ interface Message {
   id: string;
   role: 'user' | 'assistant';
   content: string;
-  timestamp: Date;
-  imageUri?: string;
 }
 
 const STORAGE_KEY = '@chat_messages';
 
 export default function HomeScreen() {
+  const [sessionId, setSessionId] = useState<string | null>(null);  
   const [message, setMessage] = useState<string>('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -88,52 +83,28 @@ export default function HomeScreen() {
       id: Date.now().toString(),
       role: 'user',
       content: message.trim() || '이미지를 분석해주세요.',
-      timestamp: new Date(),
-      imageUri: selectedImage || undefined,
     };
 
     setMessages((prev) => [...prev, userMessage]);
-    const currentImage = selectedImage;
     setMessage('');
     setSelectedImage(null);
     setIsLoading(true);
 
     try {
-      // 이미지를 base64로 변환
-      let imageBase64 = null;
-      if (currentImage) {
-        const response = await fetch(currentImage);
-        const blob = await response.blob();
-        imageBase64 = await new Promise<string>((resolve) => {
-          const reader = new FileReader();
-          reader.onloadend = () => {
-            const base64 = reader.result as string;
-            // "data:image/jpeg;base64," 부분을 제거하고 순수 base64만 추출
-            resolve(base64.split(',')[1]);
-          };
-          reader.readAsDataURL(blob);
-        });
-      }
 
       // OpenAI API 호출
-      const conversationHistory = [
-        ...messages.map((msg) => ({
-          role: msg.role,
-          content: msg.content,
-        })),
-      ];
-
-      const responseContent = await sendMessageToOpenAI(
-        conversationHistory,
+      const response = await sendMessageToOpenAI(
         userMessage.content,
-        imageBase64
+        sessionId || ''
       );
+      if (response.session_id) {
+        setSessionId(response.session_id);
+      }
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: responseContent,
-        timestamp: new Date(),
+        content: response.response || '',
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
@@ -145,7 +116,6 @@ export default function HomeScreen() {
         content: `죄송합니다. 오류가 발생했습니다.\n\n${
           error instanceof Error ? error.message : '알 수 없는 오류'
         }`,
-        timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorMessage]);
 
@@ -160,139 +130,139 @@ export default function HomeScreen() {
     }
   };
 
-  // 이미지 선택 옵션 표시
-  const showImagePickerOptions = () => {
-    Alert.alert('이미지 선택', '이미지를 가져올 방법을 선택하세요.', [
-      {
-        text: '취소',
-        style: 'cancel',
-      },
-      {
-        text: '카메라 촬영',
-        onPress: launchCamera,
-      },
-      {
-        text: '앨범 접근하기',
-        onPress: launchImageLibrary,
-      },
-    ]);
-  };
+  // // 이미지 선택 옵션 표시
+  // const showImagePickerOptions = () => {
+  //   Alert.alert('이미지 선택', '이미지를 가져올 방법을 선택하세요.', [
+  //     {
+  //       text: '취소',
+  //       style: 'cancel',
+  //     },
+  //     {
+  //       text: '카메라 촬영',
+  //       onPress: launchCamera,
+  //     },
+  //     {
+  //       text: '앨범 접근하기',
+  //       onPress: launchImageLibrary,
+  //     },
+  //   ]);
+  // };
 
   // 카메라로 사진 촬영
-  const launchCamera = async () => {
-    try {
-      // 카메라 권한 확인
-      const { status: currentStatus } =
-        await ImagePicker.getCameraPermissionsAsync();
+  // const launchCamera = async () => {
+  //   try {
+  //     // 카메라 권한 확인
+  //     const { status: currentStatus } =
+  //       await ImagePicker.getCameraPermissionsAsync();
 
-      let finalStatus = currentStatus;
+  //     let finalStatus = currentStatus;
 
-      // 권한이 없으면 요청
-      if (currentStatus !== 'granted') {
-        const { status: requestStatus } =
-          await ImagePicker.requestCameraPermissionsAsync();
-        finalStatus = requestStatus;
-      }
+  //     // 권한이 없으면 요청
+  //     if (currentStatus !== 'granted') {
+  //       const { status: requestStatus } =
+  //         await ImagePicker.requestCameraPermissionsAsync();
+  //       finalStatus = requestStatus;
+  //     }
 
-      // 권한이 거부되었을 때
-      if (finalStatus !== 'granted') {
-        Alert.alert(
-          '카메라 접근 권한 필요',
-          '카메라를 사용하려면 카메라 접근 권한이 필요합니다.',
-          [
-            {
-              text: '취소',
-              style: 'cancel',
-            },
-            {
-              text: '설정으로 이동',
-              onPress: () => {
-                if (Platform.OS === 'ios') {
-                  Linking.openURL('app-settings:');
-                } else {
-                  Linking.openSettings();
-                }
-              },
-            },
-          ]
-        );
-        return;
-      }
+  //     // 권한이 거부되었을 때
+  //     if (finalStatus !== 'granted') {
+  //       Alert.alert(
+  //         '카메라 접근 권한 필요',
+  //         '카메라를 사용하려면 카메라 접근 권한이 필요합니다.',
+  //         [
+  //           {
+  //             text: '취소',
+  //             style: 'cancel',
+  //           },
+  //           {
+  //             text: '설정으로 이동',
+  //             onPress: () => {
+  //               if (Platform.OS === 'ios') {
+  //                 Linking.openURL('app-settings:');
+  //               } else {
+  //                 Linking.openSettings();
+  //               }
+  //             },
+  //           },
+  //         ]
+  //       );
+  //       return;
+  //     }
 
-      // 카메라 실행
-      const result = await ImagePicker.launchCameraAsync({
-        mediaTypes: ['images'],
-        allowsEditing: true,
-        quality: 0.8,
-        base64: false,
-      });
+  //     // 카메라 실행
+  //     const result = await ImagePicker.launchCameraAsync({
+  //       mediaTypes: ['images'],
+  //       allowsEditing: true,
+  //       quality: 0.8,
+  //       base64: false,
+  //     });
 
-      if (!result.canceled && result.assets[0]) {
-        setSelectedImage(result.assets[0].uri);
-      }
-    } catch (error) {
-      console.error('카메라 실행 중 오류:', error);
-      Alert.alert('오류', '카메라를 실행하는 중 오류가 발생했습니다.');
-    }
-  };
+  //     if (!result.canceled && result.assets[0]) {
+  //       setSelectedImage(result.assets[0].uri);
+  //     }
+  //   } catch (error) {
+  //     console.error('카메라 실행 중 오류:', error);
+  //     Alert.alert('오류', '카메라를 실행하는 중 오류가 발생했습니다.');
+  //   }
+  // };
 
-  // 앨범에서 이미지 선택
-  const launchImageLibrary = async () => {
-    try {
-      // 앨범 권한 확인
-      const { status: currentStatus } =
-        await ImagePicker.getMediaLibraryPermissionsAsync();
+  // // 앨범에서 이미지 선택
+  // const launchImageLibrary = async () => {
+  //   try {
+  //     // 앨범 권한 확인
+  //     const { status: currentStatus } =
+  //       await ImagePicker.getMediaLibraryPermissionsAsync();
 
-      let finalStatus = currentStatus;
+  //     let finalStatus = currentStatus;
 
-      // 권한이 없으면 요청
-      if (currentStatus !== 'granted') {
-        const { status: requestStatus } =
-          await ImagePicker.requestMediaLibraryPermissionsAsync();
-        finalStatus = requestStatus;
-      }
+  //     // 권한이 없으면 요청
+  //     if (currentStatus !== 'granted') {
+  //       const { status: requestStatus } =
+  //         await ImagePicker.requestMediaLibraryPermissionsAsync();
+  //       finalStatus = requestStatus;
+  //     }
 
-      // 권한이 거부되었을 때
-      if (finalStatus !== 'granted') {
-        Alert.alert(
-          '사진 접근 권한 필요',
-          '이미지를 선택하려면 사진 라이브러리 접근 권한이 필요합니다.',
-          [
-            {
-              text: '취소',
-              style: 'cancel',
-            },
-            {
-              text: '설정으로 이동',
-              onPress: () => {
-                if (Platform.OS === 'ios') {
-                  Linking.openURL('app-settings:');
-                } else {
-                  Linking.openSettings();
-                }
-              },
-            },
-          ]
-        );
-        return;
-      }
+  //     // 권한이 거부되었을 때
+  //     if (finalStatus !== 'granted') {
+  //       Alert.alert(
+  //         '사진 접근 권한 필요',
+  //         '이미지를 선택하려면 사진 라이브러리 접근 권한이 필요합니다.',
+  //         [
+  //           {
+  //             text: '취소',
+  //             style: 'cancel',
+  //           },
+  //           {
+  //             text: '설정으로 이동',
+  //             onPress: () => {
+  //               if (Platform.OS === 'ios') {
+  //                 Linking.openURL('app-settings:');
+  //               } else {
+  //                 Linking.openSettings();
+  //               }
+  //             },
+  //           },
+  //         ]
+  //       );
+  //       return;
+  //     }
 
-      // 앨범에서 이미지 선택
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ['images'],
-        allowsEditing: true,
-        quality: 0.8,
-        base64: false,
-      });
+  //     // 앨범에서 이미지 선택
+  //     const result = await ImagePicker.launchImageLibraryAsync({
+  //       mediaTypes: ['images'],
+  //       allowsEditing: true,
+  //       quality: 0.8,
+  //       base64: false,
+  //     });
 
-      if (!result.canceled && result.assets[0]) {
-        setSelectedImage(result.assets[0].uri);
-      }
-    } catch (error) {
-      console.error('이미지 선택 중 오류:', error);
-      Alert.alert('오류', '이미지를 선택하는 중 오류가 발생했습니다.');
-    }
-  };
+  //     if (!result.canceled && result.assets[0]) {
+  //       setSelectedImage(result.assets[0].uri);
+  //     }
+  //   } catch (error) {
+  //     console.error('이미지 선택 중 오류:', error);
+  //     Alert.alert('오류', '이미지를 선택하는 중 오류가 발생했습니다.');
+  //   }
+  // };
 
   return (
     <SafeAreaView className="flex-1 bg-white" edges={['top']}>
@@ -380,13 +350,13 @@ export default function HomeScreen() {
                         isUser ? 'bg-black' : 'bg-gray-100'
                       }`}
                     >
-                      {msg.imageUri && (
+                      {/* {msg.imageUri && (
                         <Image
                           source={{ uri: msg.imageUri }}
                           className="w-48 h-48 rounded-xl mb-2"
                           resizeMode="cover"
                         />
-                      )}
+                      )} */}
                       <Text
                         className={`text-base ${
                           isUser ? 'text-white' : 'text-gray-800'
@@ -412,12 +382,12 @@ export default function HomeScreen() {
 
         {/* 입력창 - 키보드 위에 고정됨 */}
         <View className="flex-row items-center px-4 py-3 bg-white">
-          <TouchableOpacity
+          {/* <TouchableOpacity
             className="bg-gray-100 rounded-full p-2"
             onPress={showImagePickerOptions}
           >
             <Ionicons name="add-outline" size={24} color="gray" />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <View
             className="flex-1 flex flex-row items-center justify-between bg-gray-100 rounded-2xl pl-4 pr-2 ml-2"
@@ -425,7 +395,7 @@ export default function HomeScreen() {
           >
             <View className="flex flex-col gap-2 justify-center flex-1">
               {/* 이미지 미리보기 */}
-              {selectedImage && (
+              {/* {selectedImage && (
                 <View className="mb-1 flex-row items-center pt-2">
                   <View className="relative">
                     <Image
@@ -441,7 +411,7 @@ export default function HomeScreen() {
                     </TouchableOpacity>
                   </View>
                 </View>
-              )}
+              )} */}
               <TextInput
                 className="text-gray-800 text-sm py-2"
                 placeholder="무엇이든 물어보세요"
@@ -486,4 +456,4 @@ export default function HomeScreen() {
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
-}
+} 
