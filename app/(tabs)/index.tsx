@@ -274,7 +274,7 @@ export default function HomeScreen() {
             <Ionicons name="menu-outline" size={24} color="gray" />
           </TouchableOpacity>
         }
-        title="ChatGPT 5.1"
+        title="GLAB"
         rightIcon={
           <TouchableOpacity
             onPress={() => {
