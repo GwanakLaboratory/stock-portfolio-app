@@ -261,7 +261,7 @@ export default function ChatScreen() {
           ))}
         </View>
         <Text className="text-xs text-gray-500 mt-2">
-          1: 안정형 ~ 10: 공격형
+          1: 안정형 ~ 6: 공격형
         </Text>
       </View>
 
