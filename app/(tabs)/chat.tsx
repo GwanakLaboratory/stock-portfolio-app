@@ -100,6 +100,7 @@ export default function ChatScreen() {
   const handleGeneratePortfolio = async () => {
     try {
       setIsLoading(true);
+      setPortfolioData(null); // 새 요청 시작 시 이전 데이터 초기화
       const result = await generatePortfolio(portfolioModel, riskLevel);
 
       if (result.success) {
@@ -109,6 +110,7 @@ export default function ChatScreen() {
         throw new Error('포트폴리오를 생성할 수 없습니다.');
       }
     } catch (error) {
+      setPortfolioData(null); // 실패 시 데이터 초기화
       Alert.alert(
         '생성 실패',
         error instanceof Error
@@ -213,7 +215,7 @@ export default function ChatScreen() {
           {[
             { label: '국내상장 (주식+ETF)', value: 'STOCK_ETF' },
             { label: 'ETF 전용', value: 'ETF' },
-            { label: 'ETF+TQ', value: 'ETF_TQ' },
+            { label: 'ETF+TQ', value: 'TFT_TOTAL_EQUAL' },
           ].map((item) => (
             <TouchableOpacity
               key={item.value}
@@ -240,7 +242,7 @@ export default function ChatScreen() {
           위험도 레벨: {riskLevel}
         </Text>
         <View className="flex-row items-center gap-2">
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((level) => (
+          {[1, 2, 3, 4, 5, 6].map((level) => (
             <TouchableOpacity
               key={level}
               className={`flex-1 py-2 rounded-lg ${
@@ -301,10 +303,10 @@ export default function ChatScreen() {
           )}
 
           {/* 종목 리스트 */}
-          {portfolioData.portfolio && portfolioData.portfolio.length > 0 && (
+          {portfolioData.data && portfolioData.data.length > 0 && (
             <View>
               <Text className="text-base font-semibold mb-2">종목 구성</Text>
-              {portfolioData.portfolio.map((stock: any, index: number) => (
+              {portfolioData.data.map((stock: any, index: number) => (
                 <View
                   key={index}
                   className="bg-white border border-gray-200 rounded-xl p-4 mb-2"
@@ -312,16 +314,14 @@ export default function ChatScreen() {
                   <View className="flex-row justify-between items-start">
                     <View className="flex-1">
                       <Text className="text-base font-semibold">
-                        {stock.name}
+                        {stock.koNm}
                       </Text>
                       <Text className="text-sm text-gray-500">
-                        {stock.ticker}
+                        {stock.isuSrtCd}
                       </Text>
-                      {stock.sector && (
-                        <Text className="text-xs text-gray-400 mt-1">
-                          {stock.sector}
-                        </Text>
-                      )}
+                      <Text className="text-xs text-gray-400 mt-1">
+                        가격: {stock.trdPrc.toLocaleString()}원
+                      </Text>
                     </View>
                     <View className="bg-green-100 px-3 py-1 rounded-full">
                       <Text className="text-green-700 font-semibold">

@@ -1,9 +1,6 @@
 // 주식 분석 API 클라이언트
 
-interface StockAnalysisRequest {
-  stock_name: string;
-  stock_ticker: string;
-}
+import { supabase } from '@/lib/supabase';
 
 interface StockAnalysisResponse {
   success: boolean;
@@ -15,25 +12,18 @@ interface StockAnalysisResponse {
   error?: string;
 }
 
-interface PortfolioRequest {
-  model?: string;
-  risk_level?: number;
-}
-
-interface PortfolioStock {
-  name: string;
-  ticker: string;
+interface PortfolioItem {
+  isuSrtCd: string;
+  koNm: string;
+  trdPrc: number;
   weight: number;
-  sector: string;
 }
 
 interface PortfolioResponse {
   success: boolean;
-  portfolio?: PortfolioStock[];
-  summary?: string;
-  model?: string;
-  risk_level?: number;
-  error?: string;
+  status?: string;
+  data?: PortfolioItem[];
+  error?: string | null;
 }
 
 interface SearchStockResponse {
@@ -104,36 +94,28 @@ export async function generatePortfolio(
       `📈 포트폴리오 생성 요청 (모델: ${model}, 위험도: ${riskLevel})`
     );
 
-    const response = await fetch(`${STOCK_API_BASE_URL}/api/stock/portfolio`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model,
-        risk_level: riskLevel,
-      }),
+    const { data, error } = await supabase.functions.invoke('generate-portfolio-and-response', {
+      body: { model, risk_level: riskLevel },
     });
 
-    const data: PortfolioResponse = await response.json();
+    if (error) {
+      console.error('Error calling generate_portfolio function:', error);
+      throw error;
+    }
 
-    if (!response.ok) {
-      throw new Error(data.error || '포트폴리오 생성에 실패했습니다.');
+    // data가 문자열인 경우 파싱, 객체인 경우 그대로 사용
+    const parsedData: PortfolioResponse = typeof data === 'string' 
+      ? JSON.parse(data) 
+      : data;
+
+    if (!parsedData.success) {
+      throw new Error(parsedData.error || '포트폴리오 생성에 실패했습니다.');
     }
 
     console.log('✅ 포트폴리오 생성 완료');
-    return data;
+    return parsedData;
   } catch (error) {
     console.error('포트폴리오 API 호출 오류:', error);
-
-    if (error instanceof TypeError && error.message.includes('fetch')) {
-      throw new Error(
-        '통합 API 서버에 연결할 수 없습니다.\n' +
-          `(${STOCK_API_BASE_URL})\n\n` +
-          '서버 실행: yarn server'
-      );
-    }
-
     throw error;
   }
 }
