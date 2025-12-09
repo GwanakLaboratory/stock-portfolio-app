@@ -6,7 +6,6 @@ import {
   Alert,
   Platform,
   ScrollView,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
@@ -43,7 +42,7 @@ export default function MyPage() {
 
   const handleLogout = async () => {
     console.log('로그아웃 버튼 클릭됨');
-    
+
     const performLogout = async () => {
       console.log('로그아웃 확인됨, 데이터 삭제 시작');
       try {
@@ -51,7 +50,7 @@ export default function MyPage() {
         await AsyncStorage.removeItem('userData');
         await AsyncStorage.removeItem('user_id');
         console.log('데이터 삭제 완료, 로그인 화면으로 이동');
-        
+
         // 로그인 페이지로 직접 이동
         router.replace('/login');
       } catch (error) {
@@ -62,7 +61,10 @@ export default function MyPage() {
 
     // 웹에서는 window.confirm 사용, 모바일에서는 Alert 사용
     if (Platform.OS === 'web') {
-      if (typeof window !== 'undefined' && window.confirm('정말 로그아웃 하시겠어요?')) {
+      if (
+        typeof window !== 'undefined' &&
+        window.confirm('정말 로그아웃 하시겠어요?')
+      ) {
         await performLogout();
       } else {
         console.log('로그아웃 취소');
@@ -87,40 +89,48 @@ export default function MyPage() {
 
   if (isLoading) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.loadingContainer}>
-          <Text style={styles.loadingText}>로딩 중...</Text>
-        </View>
+      <SafeAreaView className="flex-1 bg-white items-center justify-center">
+        <Text className="text-[16px] text-gray-500">로딩 중...</Text>
       </SafeAreaView>
     );
   }
-
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView className="flex-1 bg-white">
       <Header title="내 정보" />
-      <ScrollView style={styles.scrollView}>
-        <View style={styles.content}>
-          <View style={styles.infoSection}>
-            <View style={styles.infoCard}>
-              <Text style={styles.infoLabel}>이메일</Text>
-              <Text style={styles.infoValue}>{userData?.email || '-'}</Text>
+
+      <ScrollView className="flex-1">
+        <View className="flex-1 px-5 pt-5 pb-20">
+          {/* 사용자 정보 */}
+          <View className="mb-10">
+            <View className="bg-white rounded-2xl p-5 mb-3 shadow-sm">
+              <Text className="text-[12px] font-semibold text-gray-500 mb-2 uppercase tracking-wide">
+                이메일
+              </Text>
+              <Text className="text-[18px] font-semibold text-black">
+                {userData?.email || '-'}
+              </Text>
             </View>
 
-            <View style={styles.infoCard}>
-              <Text style={styles.infoLabel}>휴대전화</Text>
-              <Text style={styles.infoValue}>
+            <View className="bg-white rounded-2xl p-5 mb-3 shadow-sm">
+              <Text className="text-[12px] font-semibold text-gray-500 mb-2 uppercase tracking-wide">
+                휴대전화
+              </Text>
+              <Text className="text-[18px] font-semibold text-black">
                 {userData?.phoneNumber || '-'}
               </Text>
             </View>
           </View>
 
-          <View style={styles.actionSection}>
+          {/* 로그아웃 버튼 */}
+          <View>
             <TouchableOpacity
-              style={styles.logoutButton}
-              onPress={handleLogout}
+              className="h-14 bg-green-500 rounded-xl items-center justify-center shadow-md"
               activeOpacity={0.7}
+              onPress={handleLogout}
             >
-              <Text style={styles.logoutButtonText}>로그아웃</Text>
+              <Text className="text-white text-[16px] font-semibold">
+                로그아웃
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -128,82 +138,3 @@ export default function MyPage() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F8F9FA',
-  },
-  scrollView: {
-    flex: 1,
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 20,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    fontSize: 16,
-    color: '#666',
-  },
-  header: {
-    marginBottom: 30,
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#000',
-  },
-  infoSection: {
-    marginBottom: 40,
-  },
-  infoCard: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  infoLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#666',
-    marginBottom: 8,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  infoValue: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#000',
-  },
-  actionSection: {
-    marginTop: 20,
-  },
-  logoutButton: {
-    height: 56,
-    backgroundColor: '#FF3B30',
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#FF3B30',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  logoutButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#fff',
-  },
-});

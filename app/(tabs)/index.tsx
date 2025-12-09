@@ -389,43 +389,17 @@ export default function HomeScreen() {
         </ScrollView>
 
         {/* 입력창 - 키보드 위에 고정됨 */}
-        <View className="flex-row items-center px-4 py-3 bg-white">
-          {/* <TouchableOpacity
-            className="bg-gray-100 rounded-full p-2"
-            onPress={showImagePickerOptions}
-          >
-            <Ionicons name="add-outline" size={24} color="gray" />
-          </TouchableOpacity> */}
-
+        <View className="flex-row items-start px-4 py-3 bg-white">
           <View
-            className="flex-1 flex flex-row items-center justify-between bg-gray-100 rounded-2xl pl-4 pr-2 ml-2"
-            style={{ minHeight: 40 }}
+            className="flex-1 flex-row items-center bg-gray-100 rounded-2xl pl-4 pr-2"
+            style={{ minHeight: 44 }}
           >
-            <View className="flex flex-col gap-2 justify-center flex-1">
-              {/* 이미지 미리보기 */}
-              {/* {selectedImage && (
-                <View className="mb-1 flex-row items-center pt-2">
-                  <View className="relative">
-                    <Image
-                      source={{ uri: selectedImage }}
-                      className="w-16 h-16 rounded-lg"
-                      resizeMode="cover"
-                    />
-                    <TouchableOpacity
-                      className="absolute top-1 right-1 bg-black rounded-full w-4 h-4 items-center justify-center"
-                      onPress={() => setSelectedImage(null)}
-                    >
-                      <Ionicons name="close" size={12} color="white" />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              )} */}
+            <View className="flex-1">
               <TextInput
-                className="text-gray-800 text-sm py-2"
+                className="text-gray-800 flex-1 text-base outline-none leading-5 py-2 min-h-5 placeholder-gray-500"
                 placeholder="무엇이든 물어보세요"
                 value={message}
                 onChangeText={setMessage}
-                multiline
                 maxLength={500}
                 onSubmitEditing={sendMessage}
                 editable={!isLoading}
@@ -438,27 +412,17 @@ export default function HomeScreen() {
               />
             </View>
 
-            {message.trim().length === 0 && !selectedImage ? (
-              <View className="flex flex-row gap-2">
-                <TouchableOpacity className="p-1">
-                  <Ionicons name="mic-outline" size={20} color="gray" />
-                </TouchableOpacity>
-
-                <TouchableOpacity className="bg-black rounded-full p-1">
-                  <Ionicons name="pulse-outline" size={20} color="white" />
-                </TouchableOpacity>
-              </View>
-            ) : (
-              <TouchableOpacity
-                className={`rounded-full p-1 ${
-                  isLoading ? 'bg-gray-400' : 'bg-black'
-                }`}
-                onPress={sendMessage}
-                disabled={isLoading}
-              >
-                <Ionicons name="arrow-up" size={20} color="white" />
-              </TouchableOpacity>
-            )}
+            <TouchableOpacity
+              className={`rounded-full p-1 aspect-square ml-2 ${
+                isLoading || message.trim().length === 0
+                  ? 'bg-gray-400'
+                  : 'bg-black'
+              }`}
+              onPress={sendMessage}
+              disabled={isLoading || message.trim().length === 0}
+            >
+              <Ionicons name="arrow-up" size={18} color="white" />
+            </TouchableOpacity>
           </View>
         </View>
       </KeyboardAvoidingView>
