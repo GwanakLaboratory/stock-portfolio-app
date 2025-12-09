@@ -31,8 +31,16 @@
       "favicon": "./assets/images/favicon.png",
       "themeColor": "#ffffff",
       "backgroundColor": "#ffffff",
-      "shortName": "StockAI",
-      "display": "standalone"
+      "shortName": "GLAB",
+      "display": "standalone",
+      "name": "GLAB",
+      "description": "관악연구소 AI 기반 주식 포트폴리오 관리 서비스",
+      "startUrl": "/",
+      "scope": "/",
+      "orientation": "portrait",
+      "lang": "ko",
+      "dir": "ltr",
+      "bundler": "metro"
     },
     "plugins": [
       "expo-router",

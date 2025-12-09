@@ -2,7 +2,8 @@ import { validateUser } from '@/api/edgeFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Redirect, Tabs } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, Platform, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { AnimatedTabBarIcon } from '@/components/ui/AnimatedTabBarIcon';
@@ -13,6 +14,7 @@ export default function TabLayout() {
   const colorScheme = useColorScheme();
   const [isLoading, setIsLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     checkLoginStatus();
@@ -29,16 +31,15 @@ export default function TabLayout() {
       const data = await validateUser(user_id);
       console.log(data);
       if (data.success) {
-        
-      await AsyncStorage.setItem('user_id', data.user_id);
-      
-      // userData도 함께 저장
-      const userData = {
-        phoneNumber: data.phone,
-        email: data.email,
-        isLoggedIn: true,
-      };
-      await AsyncStorage.setItem('userData', JSON.stringify(userData));
+        await AsyncStorage.setItem('user_id', data.user_id);
+
+        // userData도 함께 저장
+        const userData = {
+          phoneNumber: data.phone,
+          email: data.email,
+          isLoggedIn: true,
+        };
+        await AsyncStorage.setItem('userData', JSON.stringify(userData));
         setIsLoggedIn(true);
       } else {
         setIsLoggedIn(false);
@@ -71,7 +72,12 @@ export default function TabLayout() {
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
         tabBarButton: HapticTab,
-        tabBarIconStyle: { marginBottom: 4 },
+        tabBarStyle: Platform.select({
+          web: {
+            paddingBottom: insets.bottom,
+            minHeight: 50 + insets.bottom,
+          },
+        }),
       }}
     >
       <Tabs.Screen

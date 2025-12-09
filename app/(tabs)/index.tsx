@@ -6,13 +6,17 @@ import {
   ActivityIndicator,
   Alert,
   KeyboardAvoidingView,
+  Platform,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 import { sendMessageToOpenAI } from '../../services/chatApi';
 
 interface Message {
@@ -24,12 +28,13 @@ interface Message {
 const STORAGE_KEY = '@chat_messages';
 
 export default function HomeScreen() {
-  const [sessionId, setSessionId] = useState<string | null>(null);  
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const [message, setMessage] = useState<string>('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const scrollViewRef = useRef<ScrollView>(null);
+  const insets = useSafeAreaInsets();
 
   // 앱 시작 시 저장된 메시지 불러오기
   useEffect(() => {
@@ -91,7 +96,6 @@ export default function HomeScreen() {
     setIsLoading(true);
 
     try {
-
       // OpenAI API 호출
       const response = await sendMessageToOpenAI(
         userMessage.content,
@@ -265,7 +269,11 @@ export default function HomeScreen() {
   // };
 
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={['top']}>
+    <SafeAreaView
+      className="flex-1 bg-white"
+      edges={['top']}
+      style={Platform.select({ web: { paddingBottom: -insets.bottom } })}
+    >
       {/* 헤더 */}
 
       <Header
@@ -456,4 +464,4 @@ export default function HomeScreen() {
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
-} 
+}
