@@ -20,17 +20,17 @@ export default function TabLayout() {
 
   const checkLoginStatus = async () => {
     try {
-      const userId = await AsyncStorage.getItem('user_id');
-      if (!userId || userId === undefined) {
+      const user_id = await AsyncStorage.getItem('user_id');
+      if (!user_id || user_id === undefined) {
         setIsLoggedIn(false);
         return;
       }
 
-      const data = await validateUser(userId);
+      const data = await validateUser(user_id);
       console.log(data);
       if (data.success) {
         
-      await AsyncStorage.setItem('user_id', data.userId);
+      await AsyncStorage.setItem('user_id', data.user_id);
       
       // userData도 함께 저장
       const userData = {

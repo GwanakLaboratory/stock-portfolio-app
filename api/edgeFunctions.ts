@@ -15,7 +15,7 @@ interface ValidateUserRequest {
 interface ValidateUserResponse {
   success: boolean;
   message: string;
-  userId: string;
+  user_id: string;
   phone: string;
   email: string;
 }
