@@ -44,7 +44,7 @@ export default function Index() {
   // 로딩 중일 때
   if (isLoading) {
     return (
-      <View className="flex-1 justify-center items-center bg-white">
+      <View className="flex-1 items-center justify-center bg-white">
         <ActivityIndicator size="large" color="#007AFF" />
       </View>
     );

@@ -339,8 +339,8 @@ export default function HomeScreen() {
           showsVerticalScrollIndicator={false}
         >
           {messages.length === 0 ? (
-            <View className="flex-1 justify-center items-center px-5">
-              <Text className="text-2xl font-light text-center text-gray-600">
+            <View className="flex-1 items-center justify-center px-5">
+              <Text className="text-center text-2xl font-light text-gray-600">
                 준비되면 얘기해 주세요.
               </Text>
             </View>
@@ -378,8 +378,8 @@ export default function HomeScreen() {
               })}
 
               {isLoading && (
-                <View className="items-start mb-4">
-                  <View className="bg-gray-100 rounded-2xl px-4 py-3">
+                <View className="mb-4 items-start">
+                  <View className="rounded-2xl bg-gray-100 px-4 py-3">
                     <ActivityIndicator size="small" color="gray" />
                   </View>
                 </View>
@@ -389,14 +389,14 @@ export default function HomeScreen() {
         </ScrollView>
 
         {/* 입력창 - 키보드 위에 고정됨 */}
-        <View className="flex-row items-start px-4 py-3 bg-white">
+        <View className="flex-row items-start bg-white px-4 py-3">
           <View
-            className="flex-1 flex-row items-center bg-gray-100 rounded-2xl pl-4 pr-2"
+            className="flex-1 flex-row items-center rounded-2xl bg-gray-100 pl-4 pr-2"
             style={{ minHeight: 44 }}
           >
             <View className="flex-1">
               <TextInput
-                className="text-gray-800 flex-1 text-base outline-none leading-5 py-2 min-h-5 placeholder-gray-500"
+                className="min-h-5 flex-1 py-2 text-base leading-5 text-gray-800 placeholder-gray-500 outline-none"
                 placeholder="무엇이든 물어보세요"
                 value={message}
                 onChangeText={setMessage}
@@ -413,7 +413,7 @@ export default function HomeScreen() {
             </View>
 
             <TouchableOpacity
-              className={`rounded-full p-1 aspect-square ml-2 ${
+              className={`ml-2 aspect-square rounded-full p-1 ${
                 isLoading || message.trim().length === 0
                   ? 'bg-gray-400'
                   : 'bg-black'

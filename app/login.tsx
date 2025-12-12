@@ -26,9 +26,9 @@ export default function LoginScreen() {
   return (
     <SafeAreaView className="flex-1 bg-white">
       <KeyboardAvoidingView behavior="padding" className="flex-1">
-        <View className="flex-1 pt-14 px-6">
+        <View className="flex-1 px-6 pt-14">
           <View className="mb-14">
-            <Text className="text-3xl text-gray-800 mb-3 font-bold">
+            <Text className="mb-3 text-3xl font-bold text-gray-800">
               환영합니다! 👋
             </Text>
             <Text className="text-base text-gray-500">
@@ -37,9 +37,9 @@ export default function LoginScreen() {
           </View>
 
           <View className="mb-6">
-            <Text className="text-sm text-gray-500 mb-2">전화번호</Text>
+            <Text className="mb-2 text-sm text-gray-500">전화번호</Text>
             <TextInput
-              className="h-12 bg-gray-100 rounded-lg px-4 py-3 text-base text-gray-800"
+              className="h-12 rounded-lg bg-gray-100 px-4 py-3 text-base text-gray-800"
               placeholder="010-0000-0000"
               placeholderTextColor="#999"
               value={phoneNumber}
@@ -51,9 +51,9 @@ export default function LoginScreen() {
           </View>
 
           <TouchableOpacity
-            className={`h-14 bg-blue-500 rounded-xl flex justify-center items-center shadow-lg px-4 py-3 text-base text-white ${
+            className={`flex h-14 items-center justify-center rounded-xl bg-blue-500 px-4 py-3 text-base text-white shadow-lg ${
               phoneNumber.length !== 11
-                ? 'opacity-50 bg-gray-300 shadow-none'
+                ? 'bg-gray-300 opacity-50 shadow-none'
                 : ''
             }`}
             onPress={handleNext}
