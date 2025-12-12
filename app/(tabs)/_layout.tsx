@@ -107,12 +107,35 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="learn"
+        options={{
+          title: '학습',
+          tabBarIcon: ({ color, focused }) => (
+            <AnimatedTabBarIcon name="book" color={color} focused={focused} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="community"
+        options={{
+          title: '커뮤니티',
+          tabBarIcon: ({ color, focused }) => (
+            <AnimatedTabBarIcon
+              name="people-sharp"
+              color={color}
+              focused={focused}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="mypage"
         options={{
           title: '마이페이지',
           tabBarIcon: ({ color, focused }) => (
             <AnimatedTabBarIcon name="person" color={color} focused={focused} />
           ),
+          href: null,
         }}
       />
     </Tabs>
