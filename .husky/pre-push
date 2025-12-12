@@ -1,26 +1,23 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 echo "🔍 Running pre-push checks..."
 
 # ESLint 체크
 echo "📝 Running ESLint..."
-yarn lint || {
+npm run lint || {
   echo "❌ ESLint check failed. Please fix the errors and try again."
   exit 1
 }
 
 # TypeScript 타입 체크
 echo "🔷 Running TypeScript type check..."
-yarn type-check || {
+npm run type-check || {
   echo "❌ TypeScript type check failed. Please fix the errors and try again."
   exit 1
 }
 
 # Prettier 포맷 체크
 echo "💅 Running Prettier format check..."
-yarn format:check || {
-  echo "❌ Prettier format check failed. Please run 'yarn format' to fix formatting issues."
+npm run format:check || {
+  echo "❌ Prettier format check failed. Please run 'npm run format' to fix formatting issues."
   exit 1
 }
 
