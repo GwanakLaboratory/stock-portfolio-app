@@ -20,9 +20,12 @@ export async function sendMessageToOpenAI(
   sessionId: string
 ): Promise<{ response?: string; session_id?: string }> {
   try {
-    const { data, error } = await supabase.functions.invoke('send_message_to_openai', {
-      body: { message, session_id: sessionId },
-    });
+    const { data, error } = await supabase.functions.invoke(
+      'send_message_to_openai',
+      {
+        body: { message, session_id: sessionId },
+      }
+    );
 
     if (error) {
       console.error('Error calling send_message_to_openai function:', error);
@@ -30,9 +33,8 @@ export async function sendMessageToOpenAI(
     }
 
     // data가 문자열인 경우 파싱, 객체인 경우 그대로 사용
-    const parsedData: BackendResponse = typeof data === 'string' 
-      ? JSON.parse(data) 
-      : data;
+    const parsedData: BackendResponse =
+      typeof data === 'string' ? JSON.parse(data) : data;
 
     return {
       response: parsedData.response,
