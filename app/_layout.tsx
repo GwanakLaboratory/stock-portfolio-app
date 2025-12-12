@@ -12,6 +12,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 
 // 웹 플랫폼일 때만 CSS 로드
 if (Platform.OS === 'web') {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   require('../global.css');
 }
 

@@ -94,9 +94,12 @@ export async function generatePortfolio(
       `📈 포트폴리오 생성 요청 (모델: ${model}, 위험도: ${riskLevel})`
     );
 
-    const { data, error } = await supabase.functions.invoke('generate-portfolio-and-response', {
-      body: { model, risk_level: riskLevel },
-    });
+    const { data, error } = await supabase.functions.invoke(
+      'generate-portfolio-and-response',
+      {
+        body: { model, risk_level: riskLevel },
+      }
+    );
 
     if (error) {
       console.error('Error calling generate_portfolio function:', error);
@@ -104,9 +107,8 @@ export async function generatePortfolio(
     }
 
     // data가 문자열인 경우 파싱, 객체인 경우 그대로 사용
-    const parsedData: PortfolioResponse = typeof data === 'string' 
-      ? JSON.parse(data) 
-      : data;
+    const parsedData: PortfolioResponse =
+      typeof data === 'string' ? JSON.parse(data) : data;
 
     if (!parsedData.success) {
       throw new Error(parsedData.error || '포트폴리오 생성에 실패했습니다.');

@@ -43,7 +43,7 @@ export default function SignupScreen() {
       const data = await getUser(email, phoneNumber);
       console.log(data, typeof data, data.user_id);
       await AsyncStorage.setItem('user_id', data.user_id);
-      
+
       // userData도 함께 저장
       const userData = {
         phoneNumber,
@@ -107,7 +107,9 @@ export default function SignupScreen() {
 
           <TouchableOpacity
             className={`h-14 bg-blue-500 rounded-xl flex justify-center items-center shadow-lg px-4 py-3 text-base text-white ${
-              !email.trim() || isLoading ? 'opacity-50 bg-gray-300 shadow-none' : ''
+              !email.trim() || isLoading
+                ? 'opacity-50 bg-gray-300 shadow-none'
+                : ''
             }`}
             onPress={handleConfirm}
             disabled={!email.trim() || isLoading}

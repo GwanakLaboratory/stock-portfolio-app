@@ -24,7 +24,7 @@ export default function Index() {
       console.log(data);
       if (data.success) {
         setIsLoggedIn(true);
-        await AsyncStorage.setItem('user_id', data.user_id); 
+        await AsyncStorage.setItem('user_id', data.user_id);
         const userData = {
           phoneNumber: data.phone,
           email: data.email,
