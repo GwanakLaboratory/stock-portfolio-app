@@ -69,13 +69,13 @@ export default function SignupScreen() {
   return (
     <SafeAreaView className="flex-1 bg-white">
       <KeyboardAvoidingView behavior="padding" className="flex-1">
-        <View className="flex-1 pt-5 px-6">
-          <TouchableOpacity className="py-2 mb-5" onPress={handleBack}>
+        <View className="flex-1 px-6 pt-5">
+          <TouchableOpacity className="mb-5 py-2" onPress={handleBack}>
             <Text className="text-base text-blue-500">← 뒤로</Text>
           </TouchableOpacity>
 
           <View className="mb-10">
-            <Text className="text-3xl text-gray-800 mb-3 font-bold">
+            <Text className="mb-3 text-3xl font-bold text-gray-800">
               거의 다 됐어요! 🎉
             </Text>
             <Text className="text-base text-gray-500">
@@ -83,8 +83,8 @@ export default function SignupScreen() {
             </Text>
           </View>
 
-          <View className="bg-gray-100 rounded-lg p-4 mb-7">
-            <Text className="text-xs text-gray-500 mb-1">전화번호</Text>
+          <View className="mb-7 rounded-lg bg-gray-100 p-4">
+            <Text className="mb-1 text-xs text-gray-500">전화번호</Text>
             <Text className="text-base font-semibold text-gray-900">
               {phoneNumber.slice(0, 3)} - {phoneNumber.slice(3, 7)} -{' '}
               {phoneNumber.slice(7)}
@@ -92,9 +92,9 @@ export default function SignupScreen() {
           </View>
 
           <View className="mb-6">
-            <Text className="text-sm text-gray-500 mb-2">이메일</Text>
+            <Text className="mb-2 text-sm text-gray-500">이메일</Text>
             <TextInput
-              className="h-12 bg-gray-100 rounded-lg px-4 py-3 text-base text-gray-800"
+              className="h-12 rounded-lg bg-gray-100 px-4 py-3 text-base text-gray-800"
               placeholder="example@email.com"
               placeholderTextColor="#999"
               value={email}
@@ -106,9 +106,9 @@ export default function SignupScreen() {
           </View>
 
           <TouchableOpacity
-            className={`h-14 bg-blue-500 rounded-xl flex justify-center items-center shadow-lg px-4 py-3 text-base text-white ${
+            className={`flex h-14 items-center justify-center rounded-xl bg-blue-500 px-4 py-3 text-base text-white shadow-lg ${
               !email.trim() || isLoading
-                ? 'opacity-50 bg-gray-300 shadow-none'
+                ? 'bg-gray-300 opacity-50 shadow-none'
                 : ''
             }`}
             onPress={handleConfirm}

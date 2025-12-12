@@ -89,7 +89,7 @@ export default function MyPage() {
 
   if (isLoading) {
     return (
-      <SafeAreaView className="flex-1 bg-white items-center justify-center">
+      <SafeAreaView className="flex-1 items-center justify-center bg-white">
         <Text className="text-[16px] text-gray-500">로딩 중...</Text>
       </SafeAreaView>
     );
@@ -99,11 +99,11 @@ export default function MyPage() {
       <Header title="내 정보" />
 
       <ScrollView className="flex-1">
-        <View className="flex-1 px-5 pt-5 pb-20">
+        <View className="flex-1 px-5 pb-20 pt-5">
           {/* 사용자 정보 */}
           <View className="mb-10">
-            <View className="bg-white rounded-2xl p-5 mb-3 shadow-sm">
-              <Text className="text-[12px] font-semibold text-gray-500 mb-2 uppercase tracking-wide">
+            <View className="mb-3 rounded-2xl bg-white p-5 shadow-sm">
+              <Text className="mb-2 text-[12px] font-semibold uppercase tracking-wide text-gray-500">
                 이메일
               </Text>
               <Text className="text-[18px] font-semibold text-black">
@@ -111,8 +111,8 @@ export default function MyPage() {
               </Text>
             </View>
 
-            <View className="bg-white rounded-2xl p-5 mb-3 shadow-sm">
-              <Text className="text-[12px] font-semibold text-gray-500 mb-2 uppercase tracking-wide">
+            <View className="mb-3 rounded-2xl bg-white p-5 shadow-sm">
+              <Text className="mb-2 text-[12px] font-semibold uppercase tracking-wide text-gray-500">
                 휴대전화
               </Text>
               <Text className="text-[18px] font-semibold text-black">
@@ -124,11 +124,11 @@ export default function MyPage() {
           {/* 로그아웃 버튼 */}
           <View>
             <TouchableOpacity
-              className="h-14 bg-green-500 rounded-xl items-center justify-center shadow-md"
+              className="h-14 items-center justify-center rounded-xl bg-green-500 shadow-md"
               activeOpacity={0.7}
               onPress={handleLogout}
             >
-              <Text className="text-white text-[16px] font-semibold">
+              <Text className="text-[16px] font-semibold text-white">
                 로그아웃
               </Text>
             </TouchableOpacity>
